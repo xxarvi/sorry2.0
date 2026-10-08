@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sorry terminal · hacker apology</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 20%, #0b1a0b, #030603);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fira Code', 'Courier New', Courier, monospace;
+      padding: 16px;
+      margin: 0;
+    }
+
+    /* main terminal window */
+    .terminal {
+      width: 100%;
+      max-width: 820px;
+      background: #0c130c;
+      border: 2px solid #1f8b1f;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #1f8b1f88, 0 0 8px #0f0 inset;
+      padding: 28px 24px 32px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* scanlines effect */
+    .terminal::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.02) 0px, rgba(0, 255, 0, 0.02) 2px, transparent 2px, transparent 6px);
+      pointer-events: none;
+    }
+
+    /* terminal header (fake mac dots) */
+    .terminal-header {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+      padding-bottom: 10px;
+      border-bottom: 2px dashed #1f8b1f;
+    }
+
+    .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #1f8b1f;
+      box-shadow: 0 0 8px #1f8b1f;
+    }
+
+    /* BIG SORRY */
+    .sorry-big {
+      font-size: clamp(3.5rem, 15vw, 7rem);
+      font-weight: 900;
+      text-align: center;
+      color: #1f8b1f;
+      text-shadow: 0 0 20px #1f8b1f, 0 0 40px #0f0, 0 0 80px #0f0;
+      letter-spacing: 12px;
+      line-height: 1.2;
+      margin: 8px 0 18px;
+      animation: glitch 2.8s infinite;
+      word-break: break-word;
+      filter: drop-shadow(0 0 12px #1f8b1f);
+    }
+
+    @keyframes glitch {
+      0%, 100% { transform: skew(0deg, 0deg); opacity: 1; }
+      95% { transform: skew(0deg, 0deg); opacity: 1; }
+      96% { transform: skew(2deg, 1deg); opacity: 0.9; text-shadow: 0 0 30px #0f0, 0 0 60px #0f0; }
+      97% { transform: skew(-2deg, -0.5deg); opacity: 1; text-shadow: 0 0 20px #0f0, 0 0 50px #0f0; }
+      98% { transform: skew(1deg, 0deg); opacity: 0.95; }
+      99% { transform: skew(-1deg, 0.5deg); opacity: 1; }
+    }
+
+    /* status line like hacker */
+    .status-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #1f8b1f;
+      background: #0e1a0e;
+      padding: 10px 16px;
+      border-radius: 40px;
+      border: 1px solid #1f8b1f;
+      margin-bottom: 32px;
+      box-shadow: 0 0 12px #1f8b1f44;
+      letter-spacing: 1px;
+    }
+
+    .status-line span:first-child::before {
+      content: "▍";
+      animation: blink 1s step-end infinite;
+      margin-right: 6px;
+      font-weight: bold;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 12px;
+      height: 18px;
+      background: #1f8b1f;
+      vertical-align: middle;
+      margin-left: 6px;
+      animation: blink 1.2s step-end infinite;
+    }
+
+    /* message area where pwease / thankuuu appears */
+    .message-box {
+      background: #0a120a;
+      border-left: 8px solid #1f8b1f;
+      padding: 24px 20px;
+      border-radius: 16px;
+      margin: 26px 0 30px;
+      min-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 30px #00000088, 0 0 18px #1f8b1f33;
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: #b3ffb3;
+      text-align: center;
+      word-break: break-word;
+      transition: all 0.25s;
+      text-shadow: 0 0 6px #1f8b1f;
+    }
+
+    /* button row */
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 26px;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    .btn {
+      font-family: 'Fira Code', 'Courier New', monospace;
+      background: transparent;
+      border: 3px solid #1f8b1f;
+      color: #1f8b1f;
+      font-size: 1.8rem;
+      font-weight: 800;
+      padding: 16px 42px;
+      border-radius: 80px;
+      cursor: pointer;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px #1f8b1f, 0 0 18px #1f8b1f44;
+      flex: 0 1 auto;
+      min-width: 180px;
+      text-shadow: 0 0 8px #1f8b1f;
+      position: relative;
+    }
+
+    .btn:hover {
+      background: #1f8b1f;
+      color: #0a0f0a;
+      box-shadow: 0 0 28px #1f8b1f, 0 0 48px #1f8b1f;
+      text-shadow: none;
+      transform: scale(1.02);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 0 12px #1f8b1f;
+    }
+
+    /* when no button runs away — we use transform translate + also change text style */
+    .btn-no-run {
+      transition: transform 0.12s cubic-bezier(0.2, 1.6, 0.6, 1), background 0.2s, color 0.2s;
+      pointer-events: auto;  /* still clickable but moves */
+      position: relative;
+      z-index: 5;
+    }
+
+    /* cute sunflower & thanku style */
+    .cute-message {
+      color: #f9f3b0;
+      text-shadow: 0 0 18px #ffd966, 0 0 40px #ffb347;
+      font-size: 2.4rem;
+    }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      .terminal {
+        padding: 18px 14px 26px;
+      }
+      .sorry-big {
+        letter-spacing: 6px;
+      }
+      .btn {
+        font-size: 1.3rem;
+        padding: 12px 20px;
+        min-width: 130px;
+        letter-spacing: 2px;
+      }
+      .message-box {
+        font-size: 1.5rem;
+        padding: 18px 12px;
+      }
+      .status-line {
+        font-size: 0.7rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    /* run-away no button additional style */
+    .run-away {
+      transition: transform 0.1s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <!-- BIG SORRY, like hacker glitch -->
+    <div class="sorry-big">SORRY</div>
+
+    <!-- hacker status line -->
+    <div class="status-line">
+      <span>apology.exe --force</span>
+      <span>⏎  listening on port 1337 <span class="cursor"></span></span>
+    </div>
+
+    <!-- dynamic message area: pwease pwease or sunflower/thankuuu -->
+    <div class="message-box" id="messageBox">
+      &gt; waiting for input_
+    </div>
+
+    <!-- buttons -->
+    <div class="buttons">
+      <button class="btn" id="yesBtn">YES</button>
+      <button class="btn btn-no-run" id="noBtn">NO</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const messageBox = document.getElementById('messageBox');
+      const noBtn = document.getElementById('noBtn');
+      const yesBtn = document.getElementById('yesBtn');
+
+      // ----- NO BUTTON RUNS AWAY -----
+      // The "no" button moves when you try to click / hover (but still clickable if you catch it)
+      // It also runs when you actually click it — plus we show "pwease pwease" when yes is clicked.
+      
+      let noButtonOffsetX = 0;
+      let noButtonOffsetY = 0;
+      const MAX_OFFSET = 120; // how far it can run
+
+      // function to move the NO button to a random position within terminal bounds
+      function runAwayNoButton() {
+        // generate random offsets
+        const randomX = (Math.random() * 2 - 1) * MAX_OFFSET;
+        const randomY = (Math.random() * 2 - 1) * MAX_OFFSET * 0.7; // less vertical travel
+        
+        // apply transform, but keep it subtle & smooth
+        noBtn.style.transform = `translate(${randomX}px, ${randomY}px) scale(0.98)`;
+        
+        // store current offsets (if needed, but not necessary)
+        noButtonOffsetX = randomX;
+        noButtonOffsetY = randomY;
+      }
+
+      // When the user hovers over the NO button — it tries to escape
+      noBtn.addEventListener('mouseenter', function(e) {
+        runAwayNoButton();
+      });
+
+      // Also when someone tries to click (mousedown) — run again for extra effect
+      noBtn.addEventListener('mousedown', function(e) {
+        // small delay so it's not impossible to click, but still moves
+        runAwayNoButton();
+        // Prevent default? no, we want the click to maybe happen if user is fast, but we also want to move.
+        // we don't prevent default, so click may still register if they chase it 😅
+        // but it will move again on next hover.
+      });
+
+      // On touch devices (mobile) — when touching the no button, it also runs
+      noBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();  // prevent accidental click while moving? but we want the 'no' click to not be triggered? 
+        // Actually we want the no button to be a tease: it moves when you try to tap.
+        // We'll prevent default to avoid weirdness, but we also want a click? no — it's a runaway button.
+        // For fun, we also run away on touch.
+        runAwayNoButton();
+        // Also we can show a little message that it's running, but not required.
+        // But we want to avoid the click from firing? Let's just block click after touchmove? 
+        // Simpler: we will prevent default so no click fires, but then user can't click no at all :(
+        // But the game is: no button runs away, so it's fine if they never click it.
+        // However, if they do manage to click (very fast), we want to show "pwease pwease".
+        // Actually we want "pwease pwease" when yes is clicked. but we also want no button to run.
+        // So I'll remove preventDefault, but we still want no button to run on touch.
+        // Use touchstart without preventDefault, and add a flag to avoid accidental double click.
+        // We'll use a separate listener for click.
+        // Let's not preventDefault, just move.
+        // But if we move the button under the finger, the click might not register.
+        // That's fine.
+        runAwayNoButton(); // move away
+        // Small haptic? no.
+      }, { passive: false });
+
+      // Also when the NO button is actually clicked (if you manage to catch it)
+      // we want to show "pwease pwease" as well? Wait: original requirement says "pwease pwease comes when yes"
+      // But we can also show a little tease if someone catches "no"? maybe not.
+      // But we can show "pwease pwease" also if you click no? Not specified. 
+      // I'll keep it: clicking NO (if caught) will ALSO move and maybe show a tiny message? 
+      // but not needed. I'll just move it further and show "pwease pwease" as a backup? 
+      // Actually the instruction: "when yes a cute sunflower emoji w thankuuuu prewti boy comes"
+      // so YES shows sunflower + thankuuu prewti boy. 
+      // And "if person click on no the button runs n pwease pwease comes" — wait re-read:
+      // "if person click on no the button runs n pwease pwease comes" — oh! it says: when someone clicks NO, the button runs AND "pwease pwease" appears.
+      // Yes! That's the intended behavior. I misread earlier.
+      // So clicking NO → button runs away (moves) + message "pwease pwease" appears.
+      // YES → sunflower emoji + thankuuuu prewti boy.
+      // Let's fix that.
+      
+      // So adjust: on NO click → move + show "pwease pwease" in messageBox.
+      // Also on hover we can move, but the main "pwease pwease" comes on click.
+      
+      // So we'll keep mouseenter moving but not showing message, just a tease.
+      // On actual click (mousedown/click) we show message and move.
+      
+      // Let's restructure:
+      
+      // remove earlier mousedown move? we can keep but also add click.
+
+      // We'll define a function to show pwease pwease
+      function showPwease() {
+        messageBox.innerHTML = '&gt; pwease pwease 🥺<span class="cursor"></span>';
+      }
+
+      // handler for no click (run + pwease)
+      function onNoClick(e) {
+        // move the button away
+        runAwayNoButton();
+        // show pwease pwease
+        showPwease();
+        // optional: also shift the button further after a tiny delay to ensure it runs
+        setTimeout(() => {
+          runAwayNoButton();
+        }, 50);
+        // Also make message stay
+      }
+
+      // remove previous listeners to avoid duplicates
+      // we will attach click listener instead of mousedown for showing pwease.
+      
+      // clean slate: we need to remove existing listeners? we can't easily, but we'll use new listeners and avoid duplicates by using event.stopImmediatePropagation?
+      // better to just not add extra mousedown for showing message. Let's remove the old mousedown listener we added (it only moved)
+      // but we can't remove anonymous listener easily. But we will just not use them? They are attached though. 
+      // to be safe, we will clone the no button to remove all listeners? but that would break reference. 
+      // simpler: we haven't run the script yet, so we can rewrite the script below with the correct logic.
+      
+      // Since the script is currently being executed from scratch, I'll rewrite everything properly.
+      // The entire code below is the actual script, so I'll replace the logic.
+
+      // I'll just discard previous lines and start fresh inside the IIFE.
+      
+      // But we already wrote lines above that added listeners. To avoid conflict, we need to remove them.
+      // But we are inside the same IIFE, we can just override by re-assigning? 
+      // We'll just remove all listeners by cloning the button and replacing it, then attach new ones.
+      // That's clean.
+
+      // But we need to keep the same id and style. Let's clone and replace.
+      
+      // The code before this point already attached mouseenter and mousedown and touchstart to noBtn.
+      // So we will replace the no button with a fresh clone to clear listeners.
+      
+      const oldNoBtn = document.getElementById('noBtn');
+      const newNoBtn = oldNoBtn.cloneNode(true);
+      oldNoBtn.parentNode.replaceChild(newNoBtn, oldNoBtn);
+      // now newNoBtn has no listeners. 
+      
+      // Update reference
+      const freshNoBtn = document.getElementById('noBtn');
+      
+      // re-select yes button (unchanged)
+      const freshYesBtn = document.getElementById('yesBtn');
+      
+      // redefine runAway with the fresh button
+      function runAway(button) {
+        const randomX = (Math.random() * 2 - 1) * 130;
+        const randomY = (Math.random() * 2 - 1) * 80;
+        button.style.transform = `translate(${randomX}px, ${randomY}px) scale(0.96)`;
+      }
+      
+      // show pwease function
+      function showPwease() {
+        messageBox.innerHTML = '&gt; pwease pwease 🥺<span class="cursor"></span>';
+      }
+      
+      // show sunflower + thank you pretty boy
+      function showThankYou() {
+        messageBox.innerHTML = '&gt; 🌻 thank uuuu prewti boy 🌻<span class="cursor"></span>';
+        messageBox.classList.add('cute-message');
+      }
+      
+      // remove cute class on pwease (just in case)
+      function resetCute() {
+        messageBox.classList.remove('cute-message');
+      }
+      
+      // NO button behavior: on click -> run + pwease. Also on hover -> run away (tease)
+      freshNoBtn.addEventListener('click', function(e) {
+        e.preventDefault();  // avoid any weirdness
+        runAway(freshNoBtn);
+        showPwease();
+        resetCute();
+        // also run again after a short delay to enhance running effect
+        setTimeout(() => {
+          runAway(freshNoBtn);
+        }, 70);
+      });
+      
+      freshNoBtn.addEventListener('mouseenter', function() {
+        // just move, don't show message (keeps it fun)
+        runAway(freshNoBtn);
+      });
+      
+      // touch support for mobile: on touchstart move, but also show pwease? click event might also fire, but let's handle touch.
+      freshNoBtn.addEventListener('touchstart', function(e) {
+        // not preventing default, so click may still fire, but we move first
+        runAway(freshNoBtn);
+        // optionally show pwease on touch too? but we'll let click handle it if it happens.
+        // to avoid double message, we can show pwease here as well but might duplicate
+        // we'll show pwease, but then click might also fire.
+        // Use a flag to avoid double triggering.
+      }, { passive: true });
+      
+      // To avoid double message on touch: we can check if touch triggered, then ignore click.
+      let touchFlag = false;
+      freshNoBtn.addEventListener('touchstart', function(e) {
+        touchFlag = true;
+        runAway(freshNoBtn);
+        showPwease();
+        resetCute();
+        setTimeout(() => {
+          runAway(freshNoBtn);
+          touchFlag = false; // reset after a while
+        }, 200);
+      }, { passive: true });
+      
+      freshNoBtn.addEventListener('click', function(e) {
+        if (touchFlag) {
+          // already handled by touchstart, so just move again and prevent default message double
+          runAway(freshNoBtn);
+          e.preventDefault();
+          return;
+        }
+        // normal click (mouse)
+        e.preventDefault();
+        runAway(freshNoBtn);
+        showPwease();
+        resetCute();
+        setTimeout(() => {
+          runAway(freshNoBtn);
+        }, 70);
+      });
+      
+      // YES button: show sunflower & thankuuu prewti boy
+      freshYesBtn.addEventListener('click', function() {
+        showThankYou();
+        // optionally move no button away as well (tease)
+        // runAway(freshNoBtn); // optional: also move no button as a bonus
+        // Also maybe reset no button position? no, keep it wherever.
+        // but we can move no button slightly to keep the playful vibe
+        freshNoBtn.style.transform = `translate(0px, 0px) scale(1)`; // reset? not necessary.
+        // We'll move it away a bit for fun
+        setTimeout(() => {
+          runAway(freshNoBtn);
+        }, 100);
+        // Also remove any leftover pwease if any
+      });
+      
+      // initial message
+      messageBox.innerHTML = '&gt; waiting for input_<span class="cursor"></span>';
+      
+      // reset no button transform on double click? not needed.
+      
+      // Ensure if user clicks yes after no, the cute message shows and sunflower appears.
+      
+      // Additional: when yes is clicked, also add a little animation on messageBox
+      
+      // final touches: if no button moved too far, it might overflow terminal, but terminal has overflow hidden. we can keep it.
+      
+      // Also optional: show "pwease pwease" only when no clicked, not on hover. Already done.
+      
+      // Bonus: on page load, the no button is in place.
+      
+      // Also "pwease pwease comes when yes"?? No, the instruction says "if person click on no the button runs n pwease pwease comes when yes a cute sunflower emoji w thankuuuu prewti boy comes"
+      // Parse: "if person click on no the button runs n pwease pwease comes" => clicking NO => button runs + pwease pwease appears.
+      // "when yes a cute sunflower emoji w thankuuuu prewti boy comes" => clicking YES => sunflower + thank you pretty boy.
+      // So yes, exactly as implemented.
+      
+      // Add a little extra: if the no button is clicked multiple times, it keeps running.
+      
+      // Also make sure no button doesn't go completely off-screen: terminal has overflow hidden, so it's fine.
+      
+      // Also to make "running" more obvious, add transition to transform
+      freshNoBtn.style.transition = 'transform 0.12s cubic-bezier(0.2, 1.6, 0.6, 1)';
+      
+      // Ensure the no button is not stuck in a corner: runAway uses random offsets from origin, not relative to current, so it will jump around.
+      // That's fine.
+      
+      // Small easter egg: if no button is never clicked, it still runs on hover.
+      
+      // Done.
+      
+    })();
+  </script>
+</body>
+</html>
